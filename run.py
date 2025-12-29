@@ -10,12 +10,9 @@ from utils.print_args import print_args
 import random
 import numpy as np
 
-if __name__ == '__main__':
-    fix_seed = 2021
-    random.seed(fix_seed)
-    torch.manual_seed(fix_seed)
-    np.random.seed(fix_seed)
 
+def init_parser():
+    
     parser = argparse.ArgumentParser(description='TimesNet')
 
     # basic config
@@ -23,11 +20,13 @@ if __name__ == '__main__':
                         help='task name, options:[long_term_forecast, short_term_forecast, imputation, classification, anomaly_detection]')
     parser.add_argument('--is_training', type=int, required=True, default=1, help='status')
     parser.add_argument('--model_id', type=str, required=True, default='test', help='model id')
-    parser.add_argument('--model', type=str, required=True, default='Autoformer',
-                        help='model name, options: [Autoformer, Transformer, TimesNet]')
+    parser.add_argument('--model', type=str, default=None,
+                        help='model name, overwritten')
+    parser.add_argument('--models', type=str, nargs='+', default=['PatchTST', 'iTransformer'],
+                       help='List of models to try')
 
     # data loader
-    parser.add_argument('--data', type=str, required=True, default='ETTm1', help='dataset type')
+    parser.add_argument('--data', type=str, required=False, default='ETTm1', help='dataset type')
     parser.add_argument('--root_path', type=str, default='./data/ETT/', help='root path of the data file')
     parser.add_argument('--data_path', type=str, default='ETTh1.csv', help='data file')
     parser.add_argument('--features', type=str, default='M',
@@ -36,9 +35,10 @@ if __name__ == '__main__':
     parser.add_argument('--freq', type=str, default='h',
                         help='freq for time features encoding, options:[s:secondly, t:minutely, h:hourly, d:daily, b:business days, w:weekly, m:monthly], you can also use more detailed freq like 15min or 3h')
     parser.add_argument('--checkpoints', type=str, default='./checkpoints/', help='location of model checkpoints')
-
+    
     # forecasting task
-    parser.add_argument('--seq_len', type=int, default=96, help='input sequence length')
+    parser.add_argument('--seq_lens', type=int, nargs='+', default=None, help='List of sequence lengths')
+    parser.add_argument('--seq_len', type=int, default=None, help='input sequence length (overwritten)')
     parser.add_argument('--label_len', type=int, default=48, help='start token length')
     parser.add_argument('--pred_len', type=int, default=96, help='prediction sequence length')
     parser.add_argument('--seasonal_patterns', type=str, default='Monthly', help='subset for M4')
@@ -49,14 +49,16 @@ if __name__ == '__main__':
 
     # anomaly detection task
     parser.add_argument('--anomaly_ratio', type=float, default=0.25, help='prior anomaly ratio (%)')
-
+    
     # model define
     parser.add_argument('--expand', type=int, default=2, help='expansion factor for Mamba')
     parser.add_argument('--d_conv', type=int, default=4, help='conv kernel size for Mamba')
+    parser.add_argument('--d_state', type=int, default=4, help='state size for S-Mamba')
     parser.add_argument('--top_k', type=int, default=5, help='for TimesBlock')
     parser.add_argument('--num_kernels', type=int, default=6, help='for Inception')
     parser.add_argument('--enc_in', type=int, default=7, help='encoder input size')
     parser.add_argument('--dec_in', type=int, default=7, help='decoder input size')
+    parser.add_argument('--c_outs', type=int, nargs='+', default=None, help='List of output sizes')
     parser.add_argument('--c_out', type=int, default=7, help='output size')
     parser.add_argument('--d_model', type=int, default=512, help='dimension of model')
     parser.add_argument('--n_heads', type=int, default=8, help='num of heads')
@@ -87,8 +89,8 @@ if __name__ == '__main__':
     # optimization
     parser.add_argument('--num_workers', type=int, default=10, help='data loader num workers')
     parser.add_argument('--itr', type=int, default=1, help='experiments times')
-    parser.add_argument('--train_epochs', type=int, default=10, help='train epochs')
-    parser.add_argument('--batch_size', type=int, default=32, help='batch size of train input data')
+    parser.add_argument('--train_epochs', type=int, default=15, help='train epochs')
+    parser.add_argument('--batch_size', type=int, default=8, help='batch size of train input data')
     parser.add_argument('--patience', type=int, default=3, help='early stopping patience')
     parser.add_argument('--learning_rate', type=float, default=0.0001, help='optimizer learning rate')
     parser.add_argument('--des', type=str, default='test', help='exp description')
@@ -131,9 +133,60 @@ if __name__ == '__main__':
     parser.add_argument('--discsdtw', default=False, action="store_true", help="Discrimitive shapeDTW warp preset augmentation")
     parser.add_argument('--extra_tag', type=str, default="", help="Anything extra")
 
-    # TimeXer
+    # TimeXer/PatchTST
     parser.add_argument('--patch_len', type=int, default=16, help='patch length')
 
+    # PatchTST
+    parser.add_argument('--pstride', type=int, default=8, help='stride for patches')
+
+    # iPatch
+    parser.add_argument('--full_mlp', action='store_true', help='Use MLP layers in iTransformer style')
+    parser.add_argument('--model_trend', action='store_true', help='Model trend with a linear layer')
+    parser.add_argument('--x_mark_size', type=int, default=0, help='size of external features')
+    parser.add_argument('--main_cycle', type=int, default=24, help='main cycle')
+
+    # UTSD dataset
+    parser.add_argument('--stride', type=int, default=1, help='stride of the sliding window (just for UTSD dataset)')
+    parser.add_argument('--split', type=float, default=0.9, help='training set ratio')
+    parser.add_argument('--results_file', type=str, help='alternative file to write final results to')    
+
+    # HP configs file
+    parser.add_argument('--path_to_hp_config', type=str, default=None, help='Path to hyperparameter config file (json)')
+
+    #ModernTCN
+    parser.add_argument('--stem_ratio', type=int, default=6, help='stem ratio')
+    parser.add_argument('--downsample_ratio', type=int, default=2, help='downsample_ratio')
+    parser.add_argument('--ffn_ratio', type=int, default=2, help='ffn_ratio')
+    parser.add_argument('--patch_size', type=int, default=16, help='the patch size')
+    parser.add_argument('--patch_stride', type=int, default=8, help='the patch stride')
+
+    parser.add_argument('--num_blocks', nargs='+',type=int, default=[1,1,1,1], help='num_blocks in each stage')
+    parser.add_argument('--large_size', nargs='+',type=int, default=[51,51,51,51], help='big kernel size')
+    parser.add_argument('--small_size', nargs='+',type=int, default=[5,5,5,5], help='small kernel size for structral reparam')
+    parser.add_argument('--dims', nargs='+',type=int, default=[256,256,256,256], help='dmodels in each stage')
+    parser.add_argument('--dw_dims', nargs='+',type=int, default=[256,256,256,256])
+
+    parser.add_argument('--small_kernel_merged', default=False, action="store_true", help='small_kernel has already merged or not')
+    parser.add_argument('--call_structural_reparam', default=False, action="store_true", help='structural_reparam after training')
+    parser.add_argument('--use_multi_scale', default=False, action="store_true", help='use_multi_scale fusion')
+    parser.add_argument('--head_dropout', type=float, default=0.0, help='head dropout')
+    parser.add_argument('--revin', type=int, default=1, help='RevIN; True 1 False 0')
+    parser.add_argument('--affine', type=int, default=0, help='RevIN-affine; True 1 False 0')
+    parser.add_argument('--subtract_last', type=int, default=0, help='0: subtract mean; 1: subtract last')
+    parser.add_argument('--decomposition', type=int, default=0, help='decomposition; True 1 False 0')
+    parser.add_argument('--kernel_size', type=int, default=25, help='decomposition-kernel')
+    parser.add_argument('--individual', type=int, default=0, help='individual head; True 1 False 0')
+
+    return parser
+
+
+if __name__ == '__main__':
+    fix_seed = 2021
+    random.seed(fix_seed)
+    torch.manual_seed(fix_seed)
+    np.random.seed(fix_seed)
+    
+    parser = init_parser()
     args = parser.parse_args()
     # args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
     args.use_gpu = True if torch.cuda.is_available() else False

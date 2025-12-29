@@ -1,0 +1,52 @@
+{
+	"n_trials": 40,
+    "reduction_factor": 2,
+	"min_resource": 3,
+	"min_early_stopping_rate": 0,
+
+	"parameters": {
+		"seq_len": {
+			"type": "categorical",
+			"kwargs": {"choices": [96, 192, 336, 720]}
+		},
+		"learning_rate": {
+			"type": "categorical",
+			"kwargs": {"choices": [1e-5, 1e-4, 1e-3, 1e-2]}
+		},
+		"d_model": {
+			"type": "categorical",
+			"kwargs": {"choices": [16, 32, 64, 128, 256, 512]}
+		},
+        "e_layers": {
+            "type": "int",
+            "kwargs": {"low": 1, "high": 4, "log": false}
+        },
+		"d_state": {
+			"type": "categorical",
+			"kwargs": {"choices": [2, 4, 8, 16]}
+		}
+	},
+
+    "special_cases": {
+        "TimeMixer": {
+            "parameters": {
+                "e_layers": {
+                    "type": "int",
+                    "kwargs": {"low": 1, "high": 3, "log": false}
+                },
+                "d_model": {
+                    "type": "categorical",
+			        "kwargs": {"choices": [16, 32, 64, 128]}
+                }
+		    }
+        },
+        "ModernTCN": {
+            "parameters": {
+                "d_model": {
+                    "type": "categorical",
+			        "kwargs": {"choices": [32, 64, 128, 256]}
+                }
+		    }
+        }
+    }
+}
