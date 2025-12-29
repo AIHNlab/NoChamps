@@ -5,7 +5,7 @@ Integrated from https://github.com/luodhhh/ModernTCN with minor modifications fo
 import torch
 from torch import nn
 import torch.nn.functional as F
-from models.ModernTCN_Layers import RevIN, series_decomp, Flatten_Head
+from layers.ModernTCN_Layers import RevIN, series_decomp, Flatten_Head
 
 
 class LayerNorm(nn.Module):
