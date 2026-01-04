@@ -1,3 +1,77 @@
+# Extension of Time Series Library (TSLib)
+This repository is a fork of [[Time Series Library (TSLib)]](https://github.com/thuml/Time-Series-Library) as introduced at [[ICLR 2023]](https://arxiv.org/abs/2210.02186).
+
+This fork extends the original (long-term forecasting) benchmark with additional baseline models, datasets, and hyperparameter optimization workflows used in __There are no Champions among Supervised Long-Term Time Series Forecasting Models__ (_under review_).
+
+## Extensions in this fork
+
+**Newly added baselines.**
+- [x] **ModernTCN** - ModernTCN: A Modern Pure Convolution Structure for General Time Series Analysis [[ICLR 2024]](https://openreview.net/pdf?id=vpJMJerXHU) [[Code]](https://github.com/luodhhh/ModernTCN)
+- [x] **S-Mamba** - Transformers are SSMs: Generalized Models and Efficient Algorithms Through Structured State Space Duality [[ArXiv 2024]](https://arxiv.org/abs/2405.21060) [[Code]](https://github.com/state-spaces/mamba)
+
+- [x] **xLSTMTime** - xLSTMTime: Long-Term Time Series Forecasting with xLSTM [[MDPI 2024]](https://www.mdpi.com/2673-2688/5/3/71) [[Code]](https://github.com/muslehal/xLSTMTime)
+- [x] **iPatch** (_transformed-based model, introduced in this paper as a proof-of-concept model_)
+
+**Newly added datasets.**
+- [x] **UTSD** (_subset_) - Timer: Generative Pre-trained Transformers Are Large Time Series Models [[ICML 2024]](https://arxiv.org/abs/2402.02368) [[Hugging Face]](https://huggingface.co/datasets/thuml/UTSD)
+  - ``AustraliaRainfall``
+  - ``BeijingPM25Quality``
+  - ``KDD Cup 2018``
+  - ``Pedestrian Counts``
+  - ``TDBrain``
+  - ``BenzeneConcentration``
+  - ``MotorImagery``
+
+**Experimental utilities.**
+- Automated hyper-parameter optimization using ``Optuna``
+- Reproducible search spaces matching the paper
+- Scripts for running large-scale sweeps
+
+## Usage
+
+### Prepare Data
+You can obtain the well-preprocessed datasets **included in the original TSLib** from [[Google Drive]](https://drive.google.com/drive/folders/13Cg1KYOlzM5C7K8gK8NfC-F3EYxkM3D2?usp=sharing), [[Baidu Drive]](https://pan.baidu.com/s/1r3KhGd0Q9PJIUZdfEYoymg?pwd=i9iy) or [[Hugging Face]](https://huggingface.co/datasets/thuml/Time-Series-Library). In addition, you can obtain the well-preprocessed **UTSD datasets** for our extensions from [[Hugging Face]](https://huggingface.co/datasets/thuml/UTSD). Then place the downloaded data in the folder `./dataset`.
+ 
+### Installation
+1. Clone this repository.
+   ```bash
+   git clone https://github.com/AIHNlab/Time-Series-Library
+   cd Time-Series-Library
+   ```
+
+2. Create a new Conda environment.
+   ```bash
+   conda create -n tslib python=3.11
+   conda activate tslib
+   ```
+
+3. Install Core Dependencies.
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Install [[PyTorch]](https://pytorch.org/).
+
+### Run HPO
+
+Run hyperparameter optimization for long-term forecasting using the provided shell script.
+
+```bash
+   scripts/long_term_forecast/hp_search/script_no_champions_in_ltsf.sh \
+   96 \
+   run.py \
+   hp_results.txt
+   ```
+
+To run different configurations, adapt the shell script and call it using the folling pattern.
+```bash
+   scripts/long_term_forecast/hp_search/<script>.sh \
+   <prediction_length> \
+   <training_script> \
+   <results_file>
+   ```
+
+
 # Time Series Library (TSLib)
 TSLib is an open-source library for deep learning researchers, especially for deep time series analysis.
 
