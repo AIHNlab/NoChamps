@@ -1,0 +1,58 @@
+{
+    "ETTh1": {
+		"input_dims": 7, 
+		"main_cycle": 24
+	},
+    "ETTm1": {
+		"input_dims": 7, 
+		"main_cycle": 96
+	},
+    "ETTh2": {
+		"input_dims": 7, 
+		"main_cycle": 24
+	},
+    "ETTm2": {
+		"input_dims": 7, 
+		"main_cycle": 96
+	},
+    "Electricity": {
+		"input_dims": 321, 
+		"main_cycle": 24
+	},
+    "Weather": {
+		"input_dims": 21, 
+		"main_cycle": 24
+	},
+    "Exchange": {
+		"input_dims": 8, 
+		"main_cycle": 96
+	},
+    "BeijingAir": {
+		"input_dims": 9, 
+		"main_cycle": 24
+	},
+    "BenzeneConcentration": {
+		"input_dims": 8, 
+		"main_cycle": 24
+	},
+    "AustraliaRainfall": {
+		"input_dims": 3, 
+		"main_cycle": 24
+	},
+    "PedestrianCounts": {
+		"input_dims": 1, 
+		"main_cycle": 24
+	},
+    "KDDCup2018": {
+		"input_dims": 1, 
+		"main_cycle": 24
+	},
+    "MotorImagery": {
+		"input_dims": 64, 
+		"main_cycle": 96
+	},
+    "TDBrain": {
+		"input_dims": 33, 
+		"main_cycle": 48
+	}
+}
