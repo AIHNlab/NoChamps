@@ -206,7 +206,7 @@ if __name__ == '__main__':
         test_seed += 1
         set_seed(test_seed)
         setting = '{}_{}_{}_{}_ft{}_sl{}_ll{}_pl{}_dm{}_nh{}_el{}_dl{}_df{}_expand{}_dc{}_fc{}_eb{}_dt{}_{}_{}_{}'.format(
-            "hp-search",
+            args.task_name,
             args.model_id,
             args.model,
             args.data,
