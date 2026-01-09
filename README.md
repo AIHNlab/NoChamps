@@ -1,8 +1,8 @@
-#  📈🚫🏆 There Are No Champions in Supervised Long-Term Time Series Forecasting 
+#  📈🚫🏆 There are no Champions in Supervised Long-Term Time Series Forecasting 
 
 This repository contains the code accompanying our paper:
 
-> **[There Are No Champions in Supervised Long-Term Time Series Forecasting](https://openreview.net/forum?id=yO1JuBpTBB)**  
+> **[There are no Champions in Supervised Long-Term Time Series Forecasting](https://openreview.net/forum?id=yO1JuBpTBB)**  
 > **Transactions on Machine Learning Research (TMLR), January 2026**  
 > Lorenzo Brigato*, Rafael Morand*, Knut Strømmen*, Maria Panagiotou, Markus Schmidt, Stavroula Mougiakakou  
 > University of Bern, Switzerland 🇨🇭    
@@ -93,31 +93,36 @@ You can obtain the well-preprocessed datasets **included in the original TSLib**
 
 Run hyperparameter optimization for long-term forecasting using the provided shell script.
 
-```bash
-   scripts/long_term_forecast/hp_search/script_no_champions_in_ltsf.sh \
+```
+   bash scripts/long_term_forecast/hp_search/script_no_champions_in_ltsf.sh \
    96 \
    run.py \
    hp_results.txt
    ```
 
-To run different configurations, adapt the shell script and call it using the folling pattern.
-```bash
-   scripts/long_term_forecast/hp_search/<script>.sh \
+To run different configurations, adapt the shell script and call it using the following pattern.
+```
+   bash scripts/long_term_forecast/hp_search/<script>.sh \
    <prediction_length> \
    <training_script> \
    <results_file>
    ```
 
-### Run Performance Efficiency (TODO)
+### Run Efficiency Analysis
 
-Run performance efficiency (e.g., FLOPS, train speed, etc.) script for long-term forecasting using the provided shell script.
+After completing HPO and generating the results file, you can evaluate efficiency metrics (e.g., FLOPs, training speed, etc.) for the same long-term forecasting models using the provided shell script.
 
-```bash
-   scripts/long_term_forecast/hp_search/script_no_champions_in_ltsf.sh \
-   96 \
-   run.py \
-   hp_results.txt
+```
+   bash scripts/long_term_forecast/model_efficiency/script_no_champions_in_ltsf.sh \
+   <results_file> \
+   <task_name> \
+   <path_to_dataset_config> \
+   <batch_size> \
+   <train_epochs>
    ```
+Example arguments for the previous command, which corresponds to our default setup employed in the paper, are: ```hp_results.txt```, ```long_term_forecast```, ```./scripts/long_term_forecast/model_efficiency/dataset_configs.json```, ```1```, and ```1000```.
+
+The script will generate a file containing the raw efficiency metrics per model and dataset by adding the pattern ```_efficiency``` to the <results_file>, e.g., ```hp_results_efficiency.txt```. Additionally, the script produces another log file that aggregates all the efficiency results across datasets and further computes the efficiency-weighted error metric ξ. For more details, please refer to ```./utils/exp_efficiency_analyser.py``` and our paper (Section 4.6).  
 
 ---
 
