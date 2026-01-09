@@ -1,10 +1,10 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from layers.Transformer_EncDec import Encoder, iPatchEncoderLayer
+from layers.Transformer_EncDec import Encoder
 from layers.SelfAttention_Family import FullAttention, AttentionLayer
 from layers.Embed import DataEmbedding_inverted
-from layers.iPatch_Periodicity import PeriodicityReshape, PositionalEncoding
+from layers.iPatch_EncDec import PeriodicityReshape, PositionalEncoding, iPatchEncoderLayer
 from layers.Autoformer_EncDec import series_decomp
 
 class Model(nn.Module):
@@ -56,8 +56,7 @@ class Model(nn.Module):
                     self.n_cycles,
                     configs.d_ff,
                     dropout=configs.dropout,
-                    activation=configs.activation,
-                    full_mlp=configs.full_mlp
+                    activation=configs.activation
                 ) for l in range(configs.e_layers)
             ],
             norm_layer=torch.nn.LayerNorm(configs.d_model)

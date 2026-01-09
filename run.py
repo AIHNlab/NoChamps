@@ -140,7 +140,6 @@ def init_parser():
     parser.add_argument('--pstride', type=int, default=8, help='stride for patches')
 
     # iPatch
-    parser.add_argument('--full_mlp', action='store_true', help='Use MLP layers in iTransformer style')
     parser.add_argument('--model_trend', action='store_true', help='Model trend with a linear layer')
     parser.add_argument('--x_mark_size', type=int, default=0, help='size of external features')
     parser.add_argument('--main_cycle', type=int, default=24, help='main cycle')

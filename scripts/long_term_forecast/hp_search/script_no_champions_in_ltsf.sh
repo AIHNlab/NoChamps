@@ -101,7 +101,6 @@ for dataset in "${!datasets[@]}"; do
             --down_sampling_layers $down_sampling_layers \
             --down_sampling_method $down_sampling_method \
             --down_sampling_window $down_sampling_window \
-            --full_mlp \
             --d_state 16 \
             --path_to_hp_config $path_to_hp_config 
     done
