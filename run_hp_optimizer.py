@@ -201,7 +201,6 @@ if __name__ == '__main__':
     args.d_ff = args.d_model
     args.d_temp = args.d_model
     exp = select_experiment(args)
-    #setting = f'hp-search_{args.model_id}_{args.model}'
     for ii in range(args.itr):
         test_seed += 1
         set_seed(test_seed)
