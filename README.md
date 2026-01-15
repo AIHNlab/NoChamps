@@ -131,11 +131,15 @@ The script will generate a file containing the raw efficiency metrics per model 
 If you find this repository useful for your research, please consider citing our paper:
 
 ```
-@article{brigato2025position,
-  title={Position: There are no champions in long-term time series forecasting},
-  author={Brigato, Lorenzo and Morand, Rafael and Str{\o}mmen, Knut and Panagiotou, Maria and Schmidt, Markus and Mougiakakou, Stavroula},
-  journal={arXiv preprint arXiv:2502.14045},
-  year={2025}
+@article{
+brigato2026there,
+title={There are no Champions in Supervised Long-Term Time Series Forecasting},
+author={Lorenzo Brigato and Rafael Morand and Knut Joar Str{\o}mmen and Maria Panagiotou and Markus Schmidt and Stavroula Mougiakakou},
+journal={Transactions on Machine Learning Research},
+issn={2835-8856},
+year={2026},
+url={https://openreview.net/forum?id=yO1JuBpTBB},
+note={}
 }
 ```
 
